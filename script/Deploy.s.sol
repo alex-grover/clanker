@@ -9,10 +9,9 @@ contract DeployScript is Script {
         vm.startBroadcast();
 
         ClankerTokenFactory factory = new ClankerTokenFactory(
-            address(0), // TODO
+            payable(address(0)), // TODO
             60,
             100,
-            payable(address(0)), // TODO
             1000000000e18,
             -138200
         );

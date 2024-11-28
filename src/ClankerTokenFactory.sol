@@ -20,7 +20,6 @@ contract ClankerTokenFactory is Ownable, ERC721Holder {
     // Protocol configuration
     uint8 public protocolFeePercentEth;
     uint8 public protocolFeePercentToken;
-    address payable public protocolFeeRecipient;
     uint256 public totalSupply;
     int24 public initialTick;
 
@@ -48,16 +47,14 @@ contract ClankerTokenFactory is Ownable, ERC721Holder {
     );
 
     constructor(
-        address owner,
+        address payable owner,
         uint8 protocolFeePercentEth_,
         uint8 protocolFeePercentToken_,
-        address payable protocolFeeRecipient_,
         uint256 totalSupply_,
         int24 initialTick_
     ) Ownable(owner) {
         protocolFeePercentEth = protocolFeePercentEth_;
         protocolFeePercentToken = protocolFeePercentToken_;
-        protocolFeeRecipient = protocolFeeRecipient_;
         totalSupply = totalSupply_;
         initialTick = initialTick_;
     }
@@ -150,7 +147,7 @@ contract ClankerTokenFactory is Ownable, ERC721Holder {
         WETH.withdraw(amountETH);
 
         if (protocolAmountETH > 0) {
-            (bool sent,) = protocolFeeRecipient.call{value: protocolAmountETH}("");
+            (bool sent,) = payable(owner()).call{value: protocolAmountETH}("");
             require(sent, "Failed to send ETH to protocol fee recipient");
         }
 
@@ -160,7 +157,7 @@ contract ClankerTokenFactory is Ownable, ERC721Holder {
         }
 
         if (protocolAmountToken > 0) {
-            ClankerToken(token).transfer(protocolFeeRecipient, protocolAmountToken);
+            ClankerToken(token).transfer(owner(), protocolAmountToken);
         }
 
         if (creatorAmountToken > 0) {
@@ -178,10 +175,6 @@ contract ClankerTokenFactory is Ownable, ERC721Holder {
 
     function setProtocolFeePercentToken(uint8 protocolFeePercentToken_) external onlyOwner {
         protocolFeePercentToken = protocolFeePercentToken_;
-    }
-
-    function setProtocolFeeRecipient(address payable protocolFeeRecipient_) external onlyOwner {
-        protocolFeeRecipient = protocolFeeRecipient_;
     }
 
     function setTotalSupply(uint256 totalSupply_) external onlyOwner {
