@@ -2,13 +2,14 @@
 pragma solidity ^0.8.13;
 
 import {Ownable} from "openzeppelin-contracts/contracts/access/Ownable.sol";
+import {ERC721Holder} from "openzeppelin-contracts/contracts/token/ERC721/utils/ERC721Holder.sol";
 import {Create2} from "openzeppelin-contracts/contracts/utils/Create2.sol";
 import {INonfungiblePositionManager} from "./uniswap/INonfungiblePositionManager.sol";
 import {IWETH} from "./uniswap/IWETH.sol";
 import {TickMath} from "./uniswap/TickMath.sol";
 import {ClankerToken} from "./ClankerToken.sol";
 
-contract ClankerTokenFactory is Ownable {
+contract ClankerTokenFactory is Ownable, ERC721Holder {
     // Constants (Base mainnet)
     IWETH constant WETH = IWETH(0x4200000000000000000000000000000000000006);
     INonfungiblePositionManager constant UNISWAP_POSITION_MANAGER =
