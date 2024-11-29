@@ -75,12 +75,7 @@ contract ClankerTokenFactory is Ownable, ERC721Holder {
         token = Create2.deploy(
             0,
             params.salt,
-            abi.encodePacked(
-                type(ClankerToken).creationCode,
-                abi.encode(
-                    params.name, params.symbol, params.fid, params.creator, params.castHash, params.image, totalSupply
-                )
-            )
+            abi.encodePacked(type(ClankerToken).creationCode, abi.encode(params.name, params.symbol, totalSupply))
         );
 
         require(token < address(WETH), "Invalid salt");
